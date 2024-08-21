@@ -51,7 +51,10 @@ def packet_handler(pkt, domain, target, ip):
 
 def DNS_spoof(interface, domain, target, ip, stop_event):
     while not stop_event.is_set():
-        sniff(iface=interface, prn=lambda pkt: packet_handler(pkt, domain, target, ip), store=0, count=1)
+        try:
+            sniff(iface=interface, prn=lambda pkt: packet_handler(pkt, domain, target, ip), store=0, count=1)
+        except Exception as e:
+            print("[!] An error occurred:", e)
 
 
 def main():
@@ -81,7 +84,7 @@ def main():
     # Wait for the user to end the attack
     try:
         while True:
-            sleep(1)
+            sleep(0.1)
     except KeyboardInterrupt:
         # Stop the threads (ARP and DNS spoofing)
         stop_event.set()
